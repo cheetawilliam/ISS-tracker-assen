@@ -56,32 +56,29 @@ def next_local_passes():
 def show_current_location():
     """Show where the ISS is located above the planet right now."""
     #Display a world map and set cooridnates linked to pixels
+    screen = turtle.Screen()
+    screen.setup(1024, 515)
+    screen.setworldcoordinates(-180, -90, 180, 90)
+    screen.bgpic("worldmap.png")
+    
+    #Create an image of the ISS and place it.
+    turtle.addshape("ISS.gif")
+    iss= turtle.Turtle()
+    iss.shape("ISS.gif")
+    iss.setheading(98)
+    
+    #Get current position of the ISS
     while True:
-        screen = turtle.Screen()
-        screen.setup(1024, 515)
-        screen.setworldcoordinates(-180, -90, 180, 90)
-        screen.bgpic("worldmap.png")
+        link = "http://api.open-notify.org/iss-now.json"
+        #Get current location data from API
+        obj = retrieve_data(link)
+        lat = float(obj["iss_position"]['latitude'])
+        lon = float(obj['iss_position']["longitude"])
+        #Move the ISS to current position.          
+        iss.penup()
+        iss.goto(lon, lat)
+        turtle.exitonclick() 
         
-        #Create an image of the ISS and place it.
-        turtle.addshape("ISS.gif")
-        iss= turtle.Turtle()
-        iss.shape("ISS.gif")
-        iss.setheading(98)
-        
-        #Get current position of the ISS
-        while True:
-            link = "http://api.open-notify.org/iss-now.json"
-            #Get current location data from API
-            obj = retrieve_data(link)
-            lat = float(obj["iss_position"]['latitude'])
-            lon = float(obj['iss_position']["longitude"])
-            #Move the ISS to current position.          
-            iss.penup()
-            iss.goto(lon, lat)
-            #Wait 10 seconds.
-            time.sleep(10)
-        
-        turle.done()
 
 def start_program():
     """Start program and ask what someone wants to know about the ISS."""
